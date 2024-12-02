@@ -35,12 +35,12 @@ class SafetyConstraint:
 
         # Do not allow the tank to overflow: opening the valve or keeping it open
         # is not allowed if the level is at least []
-        elif valve_open and state >= ...:
+        elif valve_open and state >= 91:
             constrained_action = 2
 
         # Do not allow the tank to deplete: closing the valve or keeping it closed
         # is not allowed if the level is at most []
-        elif not valve_open and state <= ...:
+        elif not valve_open and state <= 7:
             constrained_action = 1
 
         if (constrained_action == 1 and not valve_open) or (constrained_action == 2 and valve_open):
