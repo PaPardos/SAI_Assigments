@@ -1,0 +1,51 @@
+Agent Submarine
+    Vars:
+        state: {s1, s2, s3, s4};  -- s1: surface, hatch closed, not sunk
+                                   -- s2: surface, hatch open, not sunk
+                                   -- s3: not surface, hatch closed, not sunk
+                                   -- s4: not surface, hatch open, sunk
+    end Vars
+
+    Actions = {up, down, open, close};
+
+    Protocol:
+        state = s1: {up, down, open, close};  -- From s1, possible actions are up, down, open, or nil
+        state = s2: {up, down, open, close};     -- From s2, possible actions are down, close, or nil
+        state = s3: {up, down, open, close};        -- From s3, possible actions are up, open, or nil
+        state = s4: {down};                  -- From s4 (sunk), only nil is allowed
+    end Protocol
+
+    Evolution:
+        state = s1 if state = s1 and Action = close;
+        state = s1 if state = s1 and Action = up;
+        state = s2 if state = s1 and Action = open;
+        state = s3 if state = s1 and Action = down;
+        state = s1 if state = s2 and Action = close;
+        state = s4 if state = s2 and Action = down;
+        state = s2 if state = s2 and Action = open;
+        state = s2 if state = s2 and Action = up;
+        state = s1 if state = s3 and Action = up;
+        state = s4 if state = s3 and Action = open;
+        state = s3 if state = s3 and Action = close;
+        state = s3 if state = s3 and Action = down;
+        state = s4 if state = s4 and Action = down;  -- Remain sunk
+    end Evolution
+end Agent
+
+Evaluation -- REWRTIE: update to surface = true or false INSTEAD Of 2 separate variables etc. See assignment on blackboard.
+    surface if Submarine.state = s1 or Submarine.state = s2;
+    not_surface if Submarine.state = s3 or Submarine.state = s4;
+    open_hatch if Submarine.state = s2 or Submarine.state = s4;
+    closed_hatch if Submarine.state = s1 or Submarine.state = s3;
+    sunk=true if Submarine.state = s4;
+end Evaluation
+
+InitStates
+    Submarine.state = s1;  -- Initial state: s1
+end InitStates
+
+Formulae -- rewrite when Evaluation has been rewritten also; delete unnecessary formulae
+    AF sunk;             -- There exists a path where the submarine eventually sinks
+    AG (surface or not_surface); -- Always either on surface or not on surface
+    -- AF surface and closed_hatch and sunk=false; -- rewrite when Evaluation has been rewritten
+end Formulae
