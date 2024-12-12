@@ -34,7 +34,7 @@ end Agent
 
 Evaluation 
     surface if Submarine.state = s1 or Submarine.state = s2;
-    open_hatch if Submarine.state = s2 or Submarine.state = s4;
+    open if Submarine.state = s2 or Submarine.state = s4;
     sunk if Submarine.state = s2;
 end Evaluation
 
@@ -45,5 +45,5 @@ end InitStates
 Formulae 
     AF sunk;             -- There exists a path where the submarine eventually sinks
     AG (surface or !surface); -- Always either on surface or not on surface
-    AF surface and !open_hatch and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
+    AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
 end Formulae
