@@ -46,4 +46,6 @@ Formulae
     AF sunk;             -- There exists a path where the submarine eventually sinks
     AG (surface or !surface); -- Always either on surface or not on surface
     AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
+    AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
+    
 end Formulae
