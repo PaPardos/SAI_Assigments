@@ -1,8 +1,8 @@
 Agent Submarine
     Vars:
-        open: boolean
-        surface: boolean
-        sunk: boolean
+        open: boolean;
+        surface: boolean;
+        sunk: boolean;
     end Vars
 
     Actions = {up, down, open, close};
@@ -30,9 +30,7 @@ Evaluation
 end Evaluation
 
 InitStates
-    Submarine.sunk = false;  -- Initial state: s1
-    Submarine.open = false;
-    Submarine.surface = true;
+    Submarine.sunk = false and Submarine.open = false and Submarine.surface = false;  -- Initial state: s1
 end InitStates
 
 Formulae 
