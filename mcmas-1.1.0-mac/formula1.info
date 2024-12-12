@@ -1,0 +1,10 @@
+-- State 0 --
+  Agent Environment
+  Agent Submarine
+    state=s1
+
+-- State 1 --
+  Agent Environment
+  Agent Submarine
+    state=s3
+
