@@ -9,10 +9,10 @@ Agent Submarine
     Actions = {up, down, open, close};
 
     Protocol:
-        state = s1: {up, down, open, close};  -- From s1, possible actions are up, down, open, or nil
-        state = s2: {up, down, open, close};     -- From s2, possible actions are down, close, or nil
-        state = s3: {up, down, open, close};        -- From s3, possible actions are up, open, or nil
-        state = s4: {down};                  -- From s4 (sunk), only nil is allowed
+        state = s1: {up, down, open, close};  -- From s1, possible actions are up, down, open and close
+        state = s2: {up, down, open, close};     -- From s2, possible actions are up, down, open and close
+        state = s3: {up, down, open, close};        -- From s3, possible actions are up, down, open and close
+        state = s4: {down};                  -- From s4 (sunk), only down is allowed, as we have failed the safety cosntraint
     end Protocol
 
     Evolution:
@@ -32,20 +32,18 @@ Agent Submarine
     end Evolution
 end Agent
 
-Evaluation -- REWRTIE: update to surface = true or false INSTEAD Of 2 separate variables etc. See assignment on blackboard.
+Evaluation 
     surface if Submarine.state = s1 or Submarine.state = s2;
-    not_surface if Submarine.state = s3 or Submarine.state = s4;
     open_hatch if Submarine.state = s2 or Submarine.state = s4;
-    closed_hatch if Submarine.state = s1 or Submarine.state = s3;
-    sunk=true if Submarine.state = s4;
+    sunk if Submarine.state = s2;
 end Evaluation
 
 InitStates
     Submarine.state = s1;  -- Initial state: s1
 end InitStates
 
-Formulae -- rewrite when Evaluation has been rewritten also; delete unnecessary formulae
+Formulae 
     AF sunk;             -- There exists a path where the submarine eventually sinks
-    AG (surface or not_surface); -- Always either on surface or not on surface
-    -- AF surface and closed_hatch and sunk=false; -- rewrite when Evaluation has been rewritten
+    AG (surface or !surface); -- Always either on surface or not on surface
+    -- AF surface and !open_hatch and !sunk; -- rewrite when Evaluation has been rewritten
 end Formulae
