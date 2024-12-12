@@ -45,5 +45,5 @@ end InitStates
 Formulae 
     AF sunk;             -- There exists a path where the submarine eventually sinks
     AG (surface or !surface); -- Always either on surface or not on surface
-    -- AF surface and !open_hatch and !sunk; -- rewrite when Evaluation has been rewritten
+    AF surface and !open_hatch and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
 end Formulae
