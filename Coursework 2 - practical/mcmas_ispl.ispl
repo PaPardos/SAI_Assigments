@@ -43,9 +43,11 @@ InitStates
 end InitStates
 
 Formulae 
-    AF sunk;             -- There exists a path where the submarine eventually sinks
-    AG (surface or !surface); -- Always either on surface or not on surface
-    AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
-    AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
-    
+    -- AF sunk;             -- There exists a path where the submarine eventually sinks
+    -- AG (surface or !surface); -- Always either on surface or not on surface
+    -- AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
+    -- AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
+    -- AG !open -> EF open; -- On all paths if open is false then exists a path in which we can turn it true.
+    EF EG !surface and !sunk; -- There is a path where from some future state, there is a path where in every state the submarine is not on the surface but is also not sunk.
+
 end Formulae
