@@ -1,49 +1,40 @@
 Agent Submarine
     Vars:
-        state: {s1, s2, s3, s4};  -- s1: surface, hatch closed, not sunk
-                                   -- s2: surface, hatch open, not sunk
-                                   -- s3: not surface, hatch closed, not sunk
-                                   -- s4: not surface, hatch open, sunk
+        open: boolean;
+        surface: boolean;
+        sunk: boolean;
     end Vars
 
     Actions = {up, down, open, close};
 
     Protocol:
-        state = s1: {up, down, open, close};  -- From s1, possible actions are up, down, open and close
-        state = s2: {up, down, open, close};     -- From s2, possible actions are up, down, open and close
-        state = s3: {up, down, open, close};        -- From s3, possible actions are up, down, open and close
-        state = s4: {down};                  -- From s4 (sunk), only down is allowed, as we have failed the safety cosntraint
+        sunk = true: {down}; -- From s4, possible actions are just to go down
+        Other: {up, down, open, close};     -- From s2, s3, s1, possible actions are up, down, open and close
     end Protocol
 
     Evolution:
-        state = s1 if state = s1 and Action = close;
-        state = s1 if state = s1 and Action = up;
-        state = s2 if state = s1 and Action = open;
-        state = s3 if state = s1 and Action = down;
-        state = s1 if state = s2 and Action = close;
-        state = s4 if state = s2 and Action = down;
-        state = s2 if state = s2 and Action = open;
-        state = s2 if state = s2 and Action = up;
-        state = s1 if state = s3 and Action = up;
-        state = s4 if state = s3 and Action = open;
-        state = s3 if state = s3 and Action = close;
-        state = s3 if state = s3 and Action = down;
-        state = s4 if state = s4 and Action = down;  -- Remain sunk
+        open = true if Action = open;
+        open = false if sunk = false and Action = close;
+        surface = true if sunk = false and Action = up;
+        surface = false if Action = down;
+        sunk = true if surface = true and open = true and Action = down;
+        sunk = true if open = false and surface = false and Action = open;
+
     end Evolution
 end Agent
 
 Evaluation 
-    surface if Submarine.state = s1 or Submarine.state = s2;
-    open if Submarine.state = s2 or Submarine.state = s4;
-    sunk if Submarine.state = s2;
+    surface if Submarine.surface = true;
+    open if Submarine.open = true;
+    sunk if Submarine.sunk = true;
 end Evaluation
 
 InitStates
-    Submarine.state = s1;  -- Initial state: s1
+    Submarine.sunk = false and Submarine.open = false and Submarine.surface = false;  -- Initial state: s1
 end InitStates
 
 Formulae 
-    -- AF sunk;             -- There exists a path where the submarine eventually sinks
+   -- AF sunk;             -- There exists a path where the submarine eventually sinks
     -- AG (surface or !surface); -- Always either on surface or not on surface
     -- AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
     -- AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
@@ -51,6 +42,6 @@ Formulae
     -- EF (EG (!surface and !sunk)); -- There is a path where from some future state, there is a path where in every state the submarine is not on the surface but is also not sunk.
     AG !open; -- On all paths globally the hatch is never open.
     AF sunk; -- On all paths at some point in the future the submarine is sunk.
-    EF (sunk and (EF !sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
+    EF (sunk -> (EF !sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
     AX (AX !sunk); -- On all paths in the next state it holds that on all paths in the next state the submarine is not sunk.
 end Formulae
