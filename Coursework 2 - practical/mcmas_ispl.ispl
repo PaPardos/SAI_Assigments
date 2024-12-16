@@ -42,6 +42,6 @@ Formulae
     -- EF (EG (!surface and !sunk)); -- There is a path where from some future state, there is a path where in every state the submarine is not on the surface but is also not sunk.
     AG !open; -- On all paths globally the hatch is never open.
     AF sunk; -- On all paths at some point in the future the submarine is sunk.
-    EF (sunk -> (EF !sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
+    EF (sunk and EF (!sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
     AX (AX !sunk); -- On all paths in the next state it holds that on all paths in the next state the submarine is not sunk.
 end Formulae
