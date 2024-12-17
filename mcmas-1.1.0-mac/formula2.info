@@ -5,10 +5,3 @@
     sunk=false
     surface=false
 
--- State 1 --
-  Agent Environment
-  Agent Submarine
-    open=true
-    sunk=false
-    surface=false
-

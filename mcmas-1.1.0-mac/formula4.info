@@ -8,7 +8,14 @@
 -- State 1 --
   Agent Environment
   Agent Submarine
-    open=true
-    sunk=false
+    open=false
+    sunk=true
+    surface=false
+
+-- State 2 --
+  Agent Environment
+  Agent Submarine
+    open=false
+    sunk=true
     surface=false
 

@@ -1,0 +1,4 @@
+digraph counterexample1 {
+ 0 [label="0",shape=ellipse]
+    0 -> 0[label="<close>"]
+}

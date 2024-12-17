@@ -30,18 +30,16 @@ Evaluation
 end Evaluation
 
 InitStates
-    Submarine.sunk = false and Submarine.open = false and Submarine.surface = false;  -- Initial state: s1
+    Submarine.sunk = false and Submarine.open = false and Submarine.surface = true;  -- Initial state: s1
 end InitStates
 
 Formulae 
-   -- AF sunk;             -- There exists a path where the submarine eventually sinks
-    -- AG (surface or !surface); -- Always either on surface or not on surface
-    -- AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
-    -- AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
-    -- AG !open -> EF open; -- On all paths if open is false then exists a path in which we can turn it true.
-    -- EF (EG (!surface and !sunk)); -- There is a path where from some future state, there is a path where in every state the submarine is not on the surface but is also not sunk.
-    AG !open; -- On all paths globally the hatch is never open.
-    AF sunk; -- On all paths at some point in the future the submarine is sunk.
-    EF (sunk and EF (!sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
-    AX (AX !sunk); -- On all paths in the next state it holds that on all paths in the next state the submarine is not sunk.
+    AF surface and !open and !sunk; -- there is a path where its on the surface and has not sunk nor opened the hatch
+    AG surface -> EF !surface; -- On all paths if surface is true then exists a path in which we can turn it false.
+    AG !open -> EF open; -- On all paths if open is false then exists a path in which we can turn it true.
+    EF (EG (!surface and !sunk)); -- There is a path where from some future state, there is a path where in every state the submarine is not on the surface but is also not sunk.
+    -- AG !open; -- On all paths globally the hatch is never open.
+    -- AF sunk; -- On all paths at some point in the future the submarine is sunk.
+    -- EF (sunk and EF (!sunk)); -- There is a path where at some point the submarine is sunk and from there there is a path where at some point in the future it is not sunk.
+    -- AX (AX !sunk); -- On all paths in the next state it holds that on all paths in the next state the submarine is not sunk.
 end Formulae

@@ -1,5 +1,7 @@
-digraph counterexample0 {
+digraph counterexample3 {
  0 [label="0",shape=ellipse]
  1 [label="1",shape=ellipse]
+ 2 [label="2",shape=ellipse]
     0 -> 1[label="<open>"]
+    1 -> 2[label="<down>"]
 }
