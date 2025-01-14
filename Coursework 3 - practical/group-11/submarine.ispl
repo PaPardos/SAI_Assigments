@@ -1,0 +1,65 @@
+-- Aran Montero 9540318
+-- Pablo Pardos 843586
+-- Jesse Hoiting 4443306
+
+Semantics=SingleAssignment;
+Agent Environment
+	Vars:
+		surface: boolean;
+		open: boolean;
+		sunk: boolean;
+    end Vars
+    Actions = {noop};
+    Protocol:
+		Other : {noop};
+    end Protocol
+    Evolution:
+		surface = true if surface = false and Submarine.Action = up;
+		surface = true if surface = true and (Submarine.Action = up or Submarine.Action = open or Submarine.Action = close);
+		surface = false if surface = true and Submarine.Action = down;
+		surface = false if surface = false and (Submarine.Action = down or Submarine.Action = open or Submarine.Action = close);
+
+		open = true if open = false and Submarine.Action = open;
+		open = true if open = true and (Submarine.Action = up or Submarine.Action = open or Submarine.Action = down);
+		open = false if open = true and Submarine.Action = close;
+		open = false if open = false and (Submarine.Action = up or Submarine.Action = close or Submarine.Action = down);
+
+		sunk = true if open = true and Submarine.Action = down;
+		sunk = true if surface = false and Submarine.Action = open;
+		sunk = false if sunk = false and (Submarine.Action = up or Submarine.Action = close);
+		sunk = false if sunk = false and open = false and Submarine.Action = down;                		
+		sunk = false if sunk = false and surface = true and Submarine.Action = open;
+    end Evolution
+end Agent
+
+Agent Submarine
+	Lobsvars = { open, sunk};
+	Vars:
+		dummy: boolean;
+	end Vars
+	Actions = {up, down, open, close};
+	Protocol:
+		Environment.sunk = false : {up, down, open, close};
+		Environment.sunk = true  : {down};
+	end Protocol
+	Evolution:
+            dummy= true if Environment.sunk = false;
+			dummy= true if Environment.sunk = true;
+	end Evolution
+end Agent
+
+Evaluation
+	surface if Environment.surface = true;
+	open if Environment.open = true;
+	sunk if Environment.sunk = true;
+end Evaluation
+
+InitStates
+	Environment.surface = true and Environment.open = false and Environment.sunk = false and Submarine.dummy = true;
+end InitStates
+
+Formulae
+	K(Submarine, sunk) or K(Submarine, !sunk);        -- Agent knows when it is sunk.
+	AG sunk -> K(Submarine, sunk); -- On all paths in all states, if the submarine is sunk it knows that it is sunk
+	EG surface and !K(Submarine,surface); -- There is a path where the submarine is always on the surface and does not know that it is on the surface.
+end Formulae
