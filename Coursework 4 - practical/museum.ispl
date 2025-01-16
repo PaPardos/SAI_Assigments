@@ -1,11 +1,27 @@
+-- Aran Montero 9540318
+-- Pablo Pardos 843586
+-- Jesse Hoiting 4443306
+
 Semantics = SingleAssignment;
+Agent Environment
+    Vars:
+        stolen: boolean;
+    end Vars
+    Actions = {noop};
+    Protocol:
+        Other : {noop};
+    end Protocol
+    Evolution:
+       stolen= true if Thief.Action=steal;
+    end Evolution
+end Agent
 
 Agent Guard
     Vars:
         location : {room0, room1, room2};
         direction : {left, right};
     end Vars
-    Actions = {move_left, move_right, null};
+    Actions = {move_left, move_right};
     Protocol:
         location=room0 and direction=right : {move_right};
         location=room1 and direction=right : {move_right};
@@ -27,7 +43,7 @@ Agent Thief
     Vars:
         location : {room0, room1, room2, home};
     end Vars
-    Actions = {move_left, move_right, wait, steal, exit, null};
+    Actions = {move_left, move_right, wait, steal, exit};
     Protocol:
         location=room0 : {move_right, wait};
         location=room1 : {move_left, move_right, wait};
@@ -43,24 +59,15 @@ Agent Thief
     end Evolution
 end Agent
 
-Environment
-    Vars:
-        stolen : boolean;
-    end Vars
-    Actions = {null};
-    Protocol:
-        true : {null};
-    end Protocol
-    Evolution:
-        stolen=true if Thief.location=room2 and Thief.Action=steal;
-    end Evolution
-end Environment
-
 Evaluation
-    stolen if Environment.stolen;
-    detected if stolen and Guard.location=Thief.location;
+    stolen if Environment.stolen = true;
+    detected if Environment.stolen = true and Guard.location=Thief.location and Guard.direction=right;
     escaped if Thief.location=home;
 end Evaluation
+
+InitStates
+	Environment.stolen = false and Guard.location = room0 and Thief.location = room0;
+end InitStates
 
 Groups
     gT = { Thief };
@@ -70,5 +77,5 @@ end Groups
 
 Formulae
     -- Thief can steal and escape without being detected
-    gT: E ((¬detected) U (stolen and escaped));
+    <gT> ((!detected) U (stolen and escaped));
 end Formulae
