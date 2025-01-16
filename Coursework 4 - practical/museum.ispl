@@ -1,0 +1,74 @@
+Semantics = SingleAssignment;
+
+Agent Guard
+    Vars:
+        location : {room0, room1, room2};
+        direction : {left, right};
+    end Vars
+    Actions = {move_left, move_right, null};
+    Protocol:
+        location=room0 and direction=right : {move_right};
+        location=room1 and direction=right : {move_right};
+        location=room2 and direction=right : {move_left};
+        location=room1 and direction=left : {move_left};
+        location=room0 and direction=left : {move_right};
+    end Protocol
+    Evolution:
+        location=room1 if location=room0 and Action=move_right;
+        location=room2 if location=room1 and Action=move_right;
+        location=room1 if location=room2 and Action=move_left;
+        location=room0 if location=room1 and Action=move_left;
+        direction=left if location=room2;
+        direction=right if location=room0;
+    end Evolution
+end Agent
+
+Agent Thief
+    Vars:
+        location : {room0, room1, room2, home};
+    end Vars
+    Actions = {move_left, move_right, wait, steal, exit, null};
+    Protocol:
+        location=room0 : {move_right, wait};
+        location=room1 : {move_left, move_right, wait};
+        location=room2 : {move_left, steal, exit, wait};
+        location=home : {wait};
+    end Protocol
+    Evolution:
+        location=room1 if location=room0 and Action=move_right;
+        location=room2 if location=room1 and Action=move_right;
+        location=room1 if location=room2 and Action=move_left;
+        location=room0 if location=room1 and Action=move_left;
+        location=home if location=room2 and Action=exit;
+    end Evolution
+end Agent
+
+Environment
+    Vars:
+        stolen : boolean;
+    end Vars
+    Actions = {null};
+    Protocol:
+        true : {null};
+    end Protocol
+    Evolution:
+        stolen=true if Thief.location=room2 and Thief.Action=steal;
+    end Evolution
+end Environment
+
+Evaluation
+    stolen if Environment.stolen;
+    detected if stolen and Guard.location=Thief.location;
+    escaped if Thief.location=home;
+end Evaluation
+
+Groups
+    gT = { Thief };
+    gG = { Guard };
+    gTG = { Thief, Guard };
+end Groups
+
+Formulae
+    -- Thief can steal and escape without being detected
+    gT: E ((¬detected) U (stolen and escaped));
+end Formulae
